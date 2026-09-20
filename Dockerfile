@@ -1,24 +1,23 @@
-FROM ubuntu:24.04
+FROM debian:13
 
-ARG DEBIAN_FRONTEND=noninteractive
+# Fallback for local Docker; Railway will override this
+ENV PORT=7681
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y wget curl git python3 python3-pip nodejs npm neofetch vim nano htop build-essential && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+     ca-certificates wget curl git python3 python3-pip tini fastfetch
 
-RUN wget --tries=3 --timeout=30 -qO /bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 && \
-    chmod +x /bin/ttyd
+# Install latest ttyd (auto-updating)
+RUN wget -qO /usr/local/bin/ttyd \
+    https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.x86_64 \
+  && chmod +x /usr/local/bin/ttyd
 
-RUN echo "neofetch" >> /root/.bashrc && \
-    echo "cd /root" >> /root/.bashrc
+# Show system info on shell start (fastfetch)
+RUN echo "fastfetch || true" >> /root/.bashrc
 
-EXPOSE 8080
+EXPOSE 7681
 
-CMD ["/bin/bash", "-c", "\
-    echo \"export PS1='\\[\\033[01;32m\\]${USERNAME:-user}@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ '\" >> /root/.bashrc && \
-    if [ -n \"$USERNAME\" ] && [ -n \"$PASSWORD\" ]; then \
-        exec /bin/ttyd -p ${PORT:-8080} -W -c \"$USERNAME:$PASSWORD\" /bin/bash; \
-    else \
-        exec /bin/ttyd -p ${PORT:-8080} -W /bin/bash; \
-    fi"]
+ENTRYPOINT ["/usr/bin/tini","--"]
+
+CMD ["/bin/bash","-lc","/usr/local/bin/ttyd --writable -i 0.0.0.0 -p ${PORT} -c ${USERNAME}:${PASSWORD} /bin/bash"]
