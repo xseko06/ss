@@ -1,23 +1,28 @@
-FROM debian:13
+ARG UBUNTU_VERSION=latest
+FROM ubuntu:${UBUNTU_VERSION}
 
-# Fallback for local Docker; Railway will override this
-ENV PORT=7681
+ARG UBUNTU_VERSION
+ENV INSTALLED_VER=${UBUNTU_VERSION}
+
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-     ca-certificates wget curl git python3 python3-pip tini fastfetch
+# 1. install neofetch, if failed -> fastfetch
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y wget curl git python3 python3-pip && \
+    (apt-get install -y neofetch || apt-get install -y fastfetch) && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install latest ttyd (auto-updating)
-RUN wget -qO /usr/local/bin/ttyd \
-    https://github.com/tsl0922/ttyd/releases/latest/download/ttyd.x86_64 \
-  && chmod +x /usr/local/bin/ttyd
+RUN wget -qO /bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.3/ttyd.x86_64 && \
+    chmod +x /bin/ttyd
 
-# Show system info on shell start (fastfetch)
-RUN echo "fastfetch || true" >> /root/.bashrc
+RUN mkdir -p /root/workspace
 
-EXPOSE 7681
+# 2. check
+RUN echo "echo 'Welcome to Ubuntu ${INSTALLED_VER} on Browser! 🐧'" >> /root/.bashrc && \
+    echo "cd /root/workspace" >> /root/.bashrc && \
+    echo "command -v neofetch >/dev/null 2>&1 && neofetch || fastfetch" >> /root/.bashrc
 
-ENTRYPOINT ["/usr/bin/tini","--"]
+EXPOSE $PORT
 
-CMD ["/bin/bash","-lc","/usr/local/bin/ttyd --writable -i 0.0.0.0 -p ${PORT} -c ${USERNAME}:${PASSWORD} /bin/bash"]
+CMD ["/bin/bash", "-c", "/bin/ttyd -p ${PORT:-8080} -c ${USERNAME:-admin}:${PASSWORD:-admin} /bin/bash"]
