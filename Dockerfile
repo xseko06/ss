@@ -25,8 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN wget -qO /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 && \
     chmod +x /usr/local/bin/ttyd
 
-# 3. Güvenli bir kullanıcı oluşturuyoruz
-RUN useradd -ms /bin/bash ubuntu && \
+# 3. Mevcut 'ubuntu' kullanıcısını yapılandırıyoruz (zaten var olduğu için hata vermez)
+RUN id -u ubuntu &>/dev/null || useradd -ms /bin/bash ubuntu && \
     echo "ubuntu:ubuntu" | chpasswd && \
     usermod -aG sudo ubuntu
 
