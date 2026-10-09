@@ -36,17 +36,20 @@ RUN chown -R Platen:Platen /home/Platen
 # Railway'in kullanacağı portu dışarıya açıyoruz
 EXPOSE 7681
 
-# Terminal ilk açıldığında ekranı temizleyip gönderdiğiniz ASCII yazıyı göstermesi için .bashrc'yi ayarlıyoruz
-RUN echo 'clear' > /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m _____ _               _______ ______ _   _ \033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m|  __ \| |             /\|__   __|  ____| \ | |\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m| |__) | |            /  \  | |  | |__  |  \| |\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m|  ___/| |           / /\ \ | |  |  __| | . ` |\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m| |    | |____ / ____ \| |  | |____| |\  |\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m|_|    |______/_/    \_\_|  |______|_| \_|\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo ""' >> /home/Platen/.bashrc && \
-    echo 'echo "Railway Ubuntu Cloud ortamına hoş geldiniz!"' >> /home/Platen/.bashrc && \
-    echo 'echo ""' >> /home/Platen/.bashrc
+# Terminal ilk açıldığında hatasız çalışacak .bashrc yapılandırması
+RUN cat << 'EOF' > /home/Platen/.bashrc
+clear
+echo -e "\033[36m _____ _               _______ ______ _   _ \033[0m"
+echo -e "\033[36m|  __ \\ |             /\\|__   __|  ____| \\ | |\033[0m"
+echo -e "\033[36m| |__) | |            /  \\  | |  | |__  |  \\| |\033[0m"
+echo -e "\033[36m|  ___/ |           / /\\ \\ | |  |  __| | . \` |\033[0m"
+echo -e "\033[36m| |    | |____ / ____ \\| |  | |____| |\\  |\033[0m"
+echo -e "\033[36m|_|    |______/_/    \\_\\_|  |______|_| \\_|\033[0m"
+echo ""
+echo "Railway Ubuntu Cloud ortamına hoş geldiniz!"
+echo ""
+EOF
+
 RUN chown Platen:Platen /home/Platen/.bashrc
 
 # 4. ttyd için kimlik doğrulama ve başlatma betiği
