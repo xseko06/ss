@@ -36,15 +36,15 @@ RUN chown -R Platen:Platen /home/Platen
 # Railway'in kullanacağı portu dışarıya açıyoruz
 EXPOSE 7681
 
-# Terminal ilk açıldığında ekranı temizleyip en üstte yeni ASCII Art'ı göstermesi için .bashrc'yi ayarlıyoruz
+# Terminal ilk açıldığında ekranı temizleyip gökkuşağı (rainbow) renkli ASCII Art'ı göstermesi için .bashrc'yi ayarlıyoruz
 RUN echo 'clear' > /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓███████▓▒░░▒▓█▓▒░       ░▒▓██████▓▒░▒▓████████▓▒░▒▓████████▓▒░▒▓███████▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[31m░▒▓███████▓▒░░▒▓█▓▒░       ░▒▓██████▓▒░▒▓████████▓▒░▒▓████████▓▒░▒▓███████▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[33m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[32m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
     echo 'echo -e "\033[36m░▒▓███████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░ ░▒▓█▓▒░    ░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓█▓▒░      ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[34m░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[35m░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[91m░▒▓█▓▒░      ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
     echo 'echo ""' >> /home/Platen/.bashrc && \
     echo 'echo "Railway Ubuntu Cloud ortamına hoş geldiniz!"' >> /home/Platen/.bashrc && \
     echo 'echo ""' >> /home/Platen/.bashrc
