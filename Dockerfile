@@ -55,7 +55,7 @@ RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'PASS="erbaa2023_"' >> /entrypoint.sh && \
     echo 'echo "Platen:$PASS" | chpasswd' >> /entrypoint.sh && \
     echo 'chown -R Platen:Platen /home/Platen' >> /entrypoint.sh && \
-    echo 'exec su - Platen -c "ttyd --port ${PORT:-7681} --writable --credential \"Platen:$PASS\" -t titleFixed=\"Ubuntu Cloud\" tmux new-session -A -s main"' >> /entrypoint.sh && \
+    echo 'exec su - Platen -c "ttyd --port ${PORT:-7681} --writable --credential \"Platen:$PASS\" -t titleFixed=\"Platen Ubuntu Cloud\" tmux new-session -A -s main"' >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 # Konteyner ayağa kalkarken betiği çalıştırıyoruz
