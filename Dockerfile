@@ -57,7 +57,7 @@ RUN echo 'clear' > /home/ubuntu/.bashrc && \
 # 4. Railway'den şifre gelmezse otomatik şifre atayan başlangıç betiği
 RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'PASS="${BOX_PASSWORD:-erbaa2023_}"' >> /entrypoint.sh && \
-    echo 'echo "Platen" | chpasswd' >> /entrypoint.sh && \
+    echo 'echo "Platen:$PASS" | chpasswd' >> /entrypoint.sh && \
     echo 'exec ttyd --port ${PORT:-7681} --writable --credential "ubuntu:$PASS" -t titleFixed="P L A T E N S E R V E R" tmux new-session -A -s main' >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
