@@ -1,47 +1,62 @@
-# Temel olarak en kararlı ve güncel Ubuntu sürümünü kullanıyoruz
-FROM ubuntu:24.04
+FROM ubuntu:22.04
 
-# Kurulum sırasında terminalin soru sormasını engeller
-ENV DEBIAN_FRONTEND=noninteractive \
-    LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
 
-# 1. Temel sistem araçlarını ve kodlama kütüphanelerini kuruyoruz
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# 1. Sistem araçlarını ve dilleri kur
+RUN apt-get update && apt-get install -y \
     curl \
     wget \
     git \
     nano \
-    vim \
-    tmux \
     sudo \
-    ca-certificates \
+    build-essential \
+    software-properties-common \
     python3 \
     python3-pip \
-    python3-venv \
+    python3-dev \
+    php \
+    php-cli \
+    php-mbstring \
+    php-xml \
+    php-curl \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Tarayıcıdan terminale bağlanmak için 'ttyd' aracını indiriyoruz
-RUN wget -qO /usr/local/bin/ttyd https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.x86_64 && \
-    chmod +x /usr/local/bin/ttyd
+# 2. En güncel Node.js ve npm kurulumu (LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs
 
-# 3. Mevcut 'ubuntu' kullanıcısını yapılandırıyoruz (zaten var olduğu için hata vermez)
-RUN id -u ubuntu &>/dev/null || useradd -ms /bin/bash ubuntu && \
-    echo "ubuntu:ubuntu" | chpasswd && \
-    usermod -aG sudo ubuntu
+# 3. Wetty (Web tabanlı terminal) kurulumu
+RUN npm install -g wetty
 
-WORKDIR /home/ubuntu
-RUN chown -R ubuntu:ubuntu /home/ubuntu
+# 4. Kullanıcı oluşturma (Kullanıcı adı: serkan, Şifre: 12345)
+RUN useradd -ms /bin/bash serkan && \
+    echo "serkan:12345" | chpasswd && \
+    adduser serkan sudo
 
-# Railway'in kullanacağı portu dışarıya açıyoruz
-EXPOSE 7681
+# Şifresiz sudo yetkisi
+RUN echo 'serkan ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-# 4. Railway'den şifre gelmezse otomatik şifre atayan başlangıç betiği
-RUN echo '#!/bin/bash' > /entrypoint.sh && \
-    echo 'PASS="${BOX_PASSWORD:-admin123}"' >> /entrypoint.sh && \
-    echo 'echo "ubuntu:$PASS" | chpasswd' >> /entrypoint.sh && \
-    echo 'exec ttyd --port ${PORT:-7681} --writable --credential "ubuntu:$PASS" -t titleFixed="Ubuntu Cloud" tmux new-session -A -s main' >> /entrypoint.sh && \
-    chmod +x /entrypoint.sh
+# 5. Giriş yapıldığında çalışacak özel ANSI logoyu ekle
+RUN echo 'clear' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;37m             \033[0;34m▄▄▄\033[0;34;47m▀▀▀\033[0;34m█\033[0;37m                  \033[0;34m▄▄▄\033[0;34;47m▀▀▀\033[0;34m█\033[0;37m                             \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;37m                \033[0;34m█\033[0;34;47m    \033[0;34m█\033[0;37m                   \033[0;34m█\033[0;34;47m    \033[0;34m█\033[0;37m                                \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;37m  \033[0;30;44m▀\033[0;37;44m▄▄▄▄▄▄▄\033[0;30;44m▀\033[0;37m     \033[0;34m█\033[0;34;47m ░ \033[0;34m█\033[0;37m     \033[0;34m▄\033[0;34;47m▀▀\033[0;37m▒▀▀▄\033[0;34m█\033[0;37;44m▄▄\033[0;34m▄▄▄\033[0;37m  \033[0;34m█\033[0;34;47m ░ \033[0;34m█▄\033[0;37;44m▄\033[0;34m▄\033[0;37m     \033[0;34m▄\033[0;34;47m▀▀\033[0;37;44m█▀▀█\033[0;34;47m▀\033[0;37;44m▄\033[0;34m▄\033[0;37m      \033[0;30;44m▀\033[0;37;44m▄▄▄▄▄▄▄\033[0;30;44m▀\033[0;37m  \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;37m \033[0;34m█\033[0;37;44m█▓█\033[0;34m█▀█\033[0;37;44m█▓█\033[0;34m█\033[0;37m    \033[0;34m█\033[0;34;47m░▒░\033[0;34m█\033[0;37m     \033[0;34m█\033[0;34;47m ░ \033[0;34m█\033[0;37m    ░\033[0;37;44m█▓█\033[0;34m█\033[0;37m    \033[0;34m█\033[0;34;47m░▒░\033[0;37;44m▀▓█▀\033[0;34m▀\033[0;37m  \033[0;34m█\033[0;34;47m ░\033[0;37;44m▒\033[0;34m█\033[0;37m  \033[0;37;44m▒█▓█\033[0;35;44m░\033[0;37m    \033[0;34m█\033[0;37;44m█▓█\033[0;34m█▀█\033[0;37;44m█▓█\033[0;34m█\033[0;37m \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m█\033[0;37;44m▓▒▓ \033[0;37m    \033[0;37;44m ▓▒▓\033[0;34m█\033[0;37m  \033[0;34m█\033[0;34;47m▒▓▒\033[0;34m█\033[0;37m  \033[0;34m█\033[0;34;47m░▒░\033[0;34m█\033[0;37m     \033[0;34m█\033[0;37;44m▓▒▓\033[0;34m█\033[0;37m    \033[0;34m█\033[0;34;47m▒▓▒\033[0;34m██\033[0;37;44m░\033[0;34m█\033[0;37m  \033[0;34m█\033[0;34;47m▒░▒\033[0;37;44m░\033[0;37m    \033[0;37;44m░▓▀▀\033[0;34m▀\033[0;37m  \033[0;34m█\033[0;37;44m▓▒▓ \033[0;37m    \033[0;37;44m ▓▒▓\033[0;34m█\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m█\033[0;37;44m▒░▒\033[0;34m▓\033[0;37m    \033[0;34m▓\033[0;37;44m▒░▒\033[0;34m█\033[0;37m  \033[0;34m█\033[0;34;47m▓█▓\033[0;35;44m░\033[0;37m  \033[0;34m█\033[0;34;47m▒▓▒\033[0;34m█\033[0;37m     \033[0;34m█\033[0;37;44m▒░▒\033[0;35;44m░\033[0;37m    \033[0;34m█\033[0;34;47m▓█▓\033[0;35;44m░\033[0;34m▒▀\033[0;37m    \033[0;34m█\033[0;34;47m▒▓▒\033[0;34m█▀■▀▀▀\033[0;37m      \033[0;34m█\033[0;37;44m▒░▒\033[0;34m▓\033[0;37m    \033[0;34m▓\033[0;37;44m▒░▒\033[0;34m█\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m█\033[0;37;44m░ ░\033[0;34m▓\033[0;37m    \033[0;34m▓\033[0;37;44m░ ░\033[0;34m█\033[0;37m  \033[0;34m█\033[0;34;44m \033[0;94;44m░ \033[0;35;44m▒\033[0;37m  \033[0;34m█\033[0;34;47m▓█▓\033[0;34m█\033[0;37m     \033[0;34m█\033[0;37;44m░ ░\033[0;35;44m▒\033[0;37m    \033[0;34m█\033[0;34;44m \033[0;94;44m░ \033[0;35;44m▒\033[0;34m░\033[0;37m    \033[0;34m█\033[0;34;47m▓█▓\033[0;35;44m░\033[0;37m     \033[0;34m▄▄■▄\033[0;37m  \033[0;34m█\033[0;37;44m░ ░\033[0;34m▓\033[0;37m    \033[0;34m▓\033[0;37;44m░ ░\033[0;34m█\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m██\033[0;34;44m \033[0;94;44m░▒ \033[0;34m▄\033[0;94;44m ▒░\033[0;34;44m \033[0;34m█\033[0;37m    \033[0;34m█\033[0;94;44m░▒░\033[0;35;44m▓\033[0;37m    \033[0;34m█\033[0;94;44m░▒░ \033[0;34m▄\033[0;37m \033[0;35m▄\033[0;34m█\033[0;34;44m \033[0;94;44m░ \033[0;35;44m▓\033[0;37m    \033[0;34m█\033[0;94;44m░▒░\033[0;35;44m▓\033[0;34m▓\033[0;35;44m▄■▄\033[0;37m  \033[0;34m█\033[0;34;44m \033[0;94;44m░\033[0;35;44m▒\033[0;34m▄\033[0;37m \033[0;34m▄\033[0;94;44m▒░░▒\033[0;35;44m▓\033[0;35m▌\033[0;37m \033[0;34m██\033[0;34;44m \033[0;94;44m░░\033[0;37m    \033[0;94;44m░░\033[0;34;44m \033[0;34m██\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m█\033[0;37;44m░\033[0;34m█\033[0;37;44m░\033[0;35;44m■▄\033[0;35m■\033[0;35;44m▄▄▄\033[0;35m▀\033[0;37m     \033[0;34m█\033[0;34;45m▀▀▀ \033[0;37m     \033[0;34m▀\033[0;35m▀▀▀▀\033[0;37m  \033[0;35m▀■\033[0;35;44m▄\033[0;35m█▄\033[0;37m  \033[0;35;44m■\033[0;34;45m▀▀▀\033[0;35;44m▄▀\033[0;34m▀▀▀\033[0;37m     \033[0;35m▀\033[0;35;44m▄▄▄▄\033[0;35m▀▀▀▀\033[0;37m   \033[0;35;44m▄▄\033[0;35m▀\033[0;35;44m▄▄\033[0;37m   \033[0;35;44m▄▄\033[0;35m▀\033[0;35;44m▄▄\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m█\033[0;37;44m▒\033[0;34m█\033[0;37;44m▒\033[0;34m█         \033[0;34m▀▀\033[0;37m                      \033[0;34m▀▀\033[0;37m                                   \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m█\033[0;37;44m▓▄▓\033[0;34m█                                                                       \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[0;34m▀▀▀▀▀\033[0;37m                                                                    \033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo ""' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[1;32m[+] Node.js, Python, PHP, ve Git Hazir Durumda!\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo -e "\033[1;33m[+] Hosgeldin Serkan! Sistem Aktif.\033[0m"' >> /home/serkan/.bashrc && \
+    echo 'echo ""' >> /home/serkan/.bashrc
 
-# Konteyner ayağa kalkarken betiği çalıştırıyoruz
-CMD ["/entrypoint.sh"]
+WORKDIR /home/serkan
+USER serkan
+
+# 6. Wetty'yi 3000 portunda başlat
+CMD ["wetty", "--port", "3000", "--base", "/", "--command", "/bin/bash"]
