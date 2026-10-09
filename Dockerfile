@@ -36,8 +36,8 @@ RUN chown -R ubuntu:ubuntu /home/ubuntu
 # Railway'in kullanacağı portu dışarıya açıyoruz
 EXPOSE 7681
 
-# Renkli ASCII Art'ı kullanıcının .bashrc dosyasına ekliyoruz
-RUN echo 'clear' >> /home/ubuntu/.bashrc && \
+# Terminal ilk açıldığında ekranı temizleyip (clear) en üstte ASCII Art'ı göstermesi için .bashrc'yi ayarlıyoruz
+RUN echo 'clear' > /home/ubuntu/.bashrc && \
     echo 'echo -e "\033[0;37m             \033[0;34m▄▄▄\033[0;34;47m▀▀▀\033[0;34m█\033[0;37m                 \033[0;34m▄▄▄\033[0;34;47m▀▀▀\033[0;34m█\033[0;37m                             \033[0m"' >> /home/ubuntu/.bashrc && \
     echo 'echo -e "\033[0;37m               \033[0;34m█\033[0;34;47m    \033[0;34m█\033[0;37m                   \033[0;34m█\033[0;34;47m    \033[0;34m█\033[0;37m                                   \033[0m"' >> /home/ubuntu/.bashrc && \
     echo 'echo -e "\033[0;37m  \033[0;30;44m▀\033[0;37;44m▄▄▄▄▄▄▄\033[0;30;44m▀\033[0;37m     \033[0;34m█\033[0;34;47m ░ \033[0;34m█\033[0;37m    \033[0;34m▄\033[0;34;47m▀▀\033[0;37m▒▀▀▄\033[0;34m█\033[0;37;44m▄▄\033[0;34m▄▄▄\033[0;37m  \033[0;34m█\033[0;34;47m ░ \033[0;34m█▄\033[0;37;44m▄\033[0;34m▄\033[0;37m     \033[0;34m▄\033[0;34;47m▀▀\033[0;37;44m█▀▀█\033[0;34;47m▀\033[0;37;44m▄\033[0;37m▄\033[0;37m      \033[0;30;44m▀\033[0;37;44m▄▄▄▄▄▄▄\033[0;30;44m▀\033[0;37m  \033[0m"' >> /home/ubuntu/.bashrc && \
