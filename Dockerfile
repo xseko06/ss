@@ -36,15 +36,14 @@ RUN chown -R Platen:Platen /home/Platen
 # Railway'in kullanacağı portu dışarıya açıyoruz
 EXPOSE 7681
 
-# Terminal ilk açıldığında ekranı temizleyip gökkuşağı (rainbow) renkli ASCII Art'ı göstermesi için .bashrc'yi ayarlıyoruz
+# Terminal ilk açıldığında ekranı temizleyip gönderdiğiniz ASCII yazıyı göstermesi için .bashrc'yi ayarlıyoruz
 RUN echo 'clear' > /home/Platen/.bashrc && \
-    echo 'echo -e "\033[31m░▒▓███████▓▒░░▒▓█▓▒░       ░▒▓██████▓▒░▒▓████████▓▒░▒▓████████▓▒░▒▓███████▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[33m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[32m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[36m░▒▓███████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░ ░▒▓█▓▒░    ░▒▓██████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[34m░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[35m░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
-    echo 'echo -e "\033[91m░▒▓█▓▒░      ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░    ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[36m _____ _               _______ ______ _   _ \033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[36m|  __ \| |             /\|__   __|  ____| \ | |\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[36m| |__) | |            /  \  | |  | |__  |  \| |\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[36m|  ___/| |           / /\ \ | |  |  __| | . ` |\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[36m| |    | |____ / ____ \| |  | |____| |\  |\033[0m"' >> /home/Platen/.bashrc && \
+    echo 'echo -e "\033[36m|_|    |______/_/    \_\_|  |______|_| \_|\033[0m"' >> /home/Platen/.bashrc && \
     echo 'echo ""' >> /home/Platen/.bashrc && \
     echo 'echo "Railway Ubuntu Cloud ortamına hoş geldiniz!"' >> /home/Platen/.bashrc && \
     echo 'echo ""' >> /home/Platen/.bashrc
@@ -55,7 +54,7 @@ RUN echo '#!/bin/bash' > /entrypoint.sh && \
     echo 'PASS="erbaa2023_"' >> /entrypoint.sh && \
     echo 'echo "Platen:$PASS" | chpasswd' >> /entrypoint.sh && \
     echo 'chown -R Platen:Platen /home/Platen' >> /entrypoint.sh && \
-    echo 'exec su - Platen -c "ttyd --port ${PORT:-7681} --writable --credential \"Platen:$PASS\" -t titleFixed=\"Platen Ubuntu Cloud\" tmux new-session -A -s main"' >> /entrypoint.sh && \
+    echo 'exec su - Platen -c "ttyd --port ${PORT:-7681} --writable --credential \"Platen:$PASS\" -t titleFixed=\"Ubuntu Cloud\" tmux new-session -A -s main"' >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 # Konteyner ayağa kalkarken betiği çalıştırıyoruz
